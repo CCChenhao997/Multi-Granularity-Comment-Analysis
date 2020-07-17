@@ -1,0 +1,71 @@
+<form bindsubmit="formBindsubmit" bindreset="formReset">
+  <!-- <view style="display:flex;">
+    <label>评论：</label>
+    <input name="text" maxlength='2000' placeholder="请输入您的本次评价" />
+  </view> -->
+  <view class="page-section">
+    <!-- <view class="page-section-title">这是一个可以自动聚焦的textarea</view> -->
+    <view class="textarea-wrp">
+      <textarea auto-focus="true" style="height: 10em" name="text" maxlength='2000' placeholder="请输入内容" />
+    </view>
+  </view>
+  <!-- <view style="display:flex;">
+    <label>密码：</label>
+    <input name="psw" placeholder="请输入密码！" password="true" />
+  </view> -->
+  <!-- <view style="display:flex;margin-top:30px;">
+    <button style="width:30%;" type="primary" formType="submit" >登录</button>
+    <button style="width:30%" formType="reset" >重置</button>
+  </view> -->
+  <view class="btn-area">
+    <button style="margin: 30rpx 0" type="primary" formType="submit">Submit</button>
+    <button style="margin: 30rpx 0" formType="reset">Reset</button>
+  </view>
+</form>
+
+<view>{{tip}}</view>
+<view>{{location}}</view>
+<view>{{location_traffic_convenience}}</view>
+<view>{{location_distance_from_business_district}}</view>
+<view>{{location_easy_to_find}}</view>
+<text>\n</text>
+
+<view>{{service}}</view>
+<view>{{service_wait_time}}</view>
+<view>{{service_waiters_attitude}}</view>
+<view>{{service_parking_convenience}}</view>
+<view>{{service_serving_speed}}</view>
+<text>\n</text>
+
+<view>{{price}}</view>
+<view>{{price_level}}</view>
+<view>{{price_cost_effective}}</view>
+<view>{{price_discount}}</view>
+<text>\n</text>
+
+<view>{{environment}}</view>
+<view>{{environment_decoration}}</view>
+<view>{{environment_noise}}</view>
+<view>{{environment_space}}</view>
+<view>{{environment_cleaness}}</view>
+<text>\n</text>
+
+<view>{{dish}}</view>
+<view>{{dish_portion}}</view>
+<view>{{dish_taste}}</view>
+<view>{{dish_look}}</view>
+<view>{{dish_recommendation}}</view>
+<text>\n</text>
+
+<view>{{others}}</view>
+<view>{{others_overall_experience}}</view>
+<view>{{others_willing_to_consume_again}}</view>
+
+<!-- <block wx:for="{{datas}}"> 
+    <view>
+        {{item.Aspect_first_layer}}  
+    </view>
+    <view>
+        {{item.Aspect_second_layer}}
+    </view>
+ </block> -->
