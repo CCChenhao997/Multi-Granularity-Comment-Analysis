@@ -15,7 +15,7 @@ from config import Config
 def map_sentimental_type(value):
     return value + 2
 
-def parse_data(data_path, predict_text=None):
+def parse_data_for_textcnn(data_path, predict_text=None):
     all_data = []
     if predict_text is not None:
         content = predict_text.strip()
@@ -40,8 +40,36 @@ def parse_data(data_path, predict_text=None):
     return all_data
 
 
+def parse_data_for_gcae(data_path, predict_text=None):
+    all_data = []
+    if predict_text is not None:
+        content = predict_text.strip()
+        # label = []
+        for idx, name in enumerate(Config.label_names):
+            # label.append(0)
+            data = {'content': content, 'aspect': Config.label_chinese_name[idx], 'label': 0}
+            all_data.append(data)
+
+    else:
+        df = pd.read_csv(data_path, encoding='utf-8')
+        for index, line in tqdm(df.iterrows()):
+            content = line[1].strip()
+            # label = []
+            for idx, name in enumerate(Config.label_names):
+                polarity = map_sentimental_type(int(line[idx+2]))
+                label = polarity
+                data = {'content': content, 'aspect': Config.label_chinese_name[idx], 'label': label}
+                all_data.append(data)
+
+    return all_data
+
+
 def build_tokenizer(fnames, max_length, data_file, opt):
-    parse = parse_data
+    if opt.model_name == 'textcnn':
+        parse = parse_data_for_textcnn
+    elif opt.model_name == 'gcae':
+        parse = parse_data_for_gcae
+
     if os.path.exists(data_file):
         print('loading tokenizer:', data_file)
         tokenizer = pickle.load(open(data_file, 'rb'))
@@ -128,7 +156,7 @@ class Tokenizer(object):
             x[-len(trunc):] = trunc     # 在句子前面打padding
         return x
     
-    def text_to_sequence(self, text, reverse=False, padding='post', truncating='post'):
+    def text_to_sequence(self, text, reverse=False, padding='post', truncating='post', max_length=None):
         if self.lower:
             text = text.lower()
         words = Tokenizer.split_text(text)
@@ -137,7 +165,8 @@ class Tokenizer(object):
             sequence = [0]
         if reverse:
             sequence.reverse()      # 将句子索引列表反转
-        return Tokenizer.pad_sequence(sequence, pad_id=self.vocab.pad_id, maxlen=self.max_length, 
+        maxlen = max_length if max_length is not None  else self.max_length
+        return Tokenizer.pad_sequence(sequence, pad_id=self.vocab.pad_id, maxlen=maxlen, 
                                       padding=padding, truncating=truncating)
     
     @staticmethod
@@ -153,13 +182,22 @@ class Tokenizer(object):
 class SentenceDataset(Dataset):
     ''' PyTorch standard dataset class '''
     def __init__(self, fname, tokenizer, target_dim, opt):
-
-        parse = parse_data
         data = list()
-        for obj in parse(fname, opt.predict_text):
-            content = tokenizer.text_to_sequence(obj['content'])
-            label = np.asarray(obj['label'], dtype='int64')
-            data.append({'content': content, 'label': label})
+
+        if opt.model_name == 'textcnn': 
+            parse = parse_data_for_textcnn
+            for obj in parse(fname, opt.predict_text):
+                content = tokenizer.text_to_sequence(obj['content'])
+                label = np.asarray(obj['label'], dtype='int64')
+                data.append({'content': content, 'label': label})
+
+        elif opt.model_name == 'gcae':
+            parse = parse_data_for_gcae
+            for obj in parse(fname, opt.predict_text):
+                content = tokenizer.text_to_sequence(obj['content'])
+                aspect = tokenizer.text_to_sequence(obj['aspect'], max_length=6)
+                label = obj['label']
+                data.append({'content': content, 'aspect': aspect, 'label': label})
 
         self._data = data
 

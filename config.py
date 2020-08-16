@@ -2,6 +2,7 @@ import sys
 import logging
 import torch
 from models.textcnn import TextCNN
+from models.gcae import GCAE
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -23,6 +24,13 @@ class Config:
                 'price_level', 'price_cost_effective', 'price_discount', 'environment_decoration', 'environment_noise',
                 'environment_space', 'environment_cleaness', 'dish_portion', 'dish_taste', 'dish_look',
                 'dish_recommendation','others_overall_experience', 'others_willing_to_consume_again']
+    
+    label_chinese_name = ['交通是否便利', '距离商圈远近', '是否容易寻找',
+                          '排队等候时间', '服务人员态度', '是否容易停车', '点菜上菜速度',
+                          '价格水平', '性价比', '折扣力度',
+                          '装修情况', '嘈杂情况', '就餐空间', '卫生情况',
+                          '菜品分量', '菜品口感', '菜品外观', '菜品推荐程度',
+                          '本次消费感受', '再次消费意愿']
 
     aspect_names = {
                     'location': ['location_traffic_convenience', 'location_distance_from_business_district', 'location_easy_to_find'], 
@@ -36,6 +44,7 @@ class Config:
     
     model_classes = {
         'textcnn': TextCNN,
+        'gcae': GCAE,
     }
     
     dataset_files = {
@@ -47,6 +56,7 @@ class Config:
     
     input_colses = {
         'textcnn': ['content'],
+        'gcae': ['content', 'aspect']
     }
     
     initializers = {

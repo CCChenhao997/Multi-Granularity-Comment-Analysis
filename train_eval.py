@@ -85,39 +85,59 @@ class Instructor:
                 targets = sample_batched['label'].to(self.opt.device)   # torch.Size([16, 20])
 
                 loss = 0
-                acc = 0
-                for idx, _ in enumerate(Config.label_names):
-                    loss += criterion(outputs[:, idx, :], targets[:, idx]) / len(Config.label_names)
-                    # acc += accuracy(outputs[:, idx, :], targets[:, idx]) / len(label_names)
-                # loss = criterion(outputs, targets)
+                # acc = 0
 
-                loss.backward()
-                optimizer.step()
-                
-                if global_step % self.opt.log_step == 0:
+                if self.opt.model_name == 'textcnn':
                     for idx, _ in enumerate(Config.label_names):
-                        # n_correct += (torch.argmax(outputs, -1) == targets).sum().item()
-                        # n_total += len(outputs)
-                        n_correct += (torch.argmax(outputs[:, idx, :], -1) == targets[:, idx]).sum().item()
+                        loss += criterion(outputs[:, idx, :], targets[:, idx]) / len(Config.label_names)
+                        # acc += accuracy(outputs[:, idx, :], targets[:, idx]) / len(label_names)
+                    loss.backward()
+                    optimizer.step()
+                    if global_step % self.opt.log_step == 0:
+                        for idx, _ in enumerate(Config.label_names):
+                            # n_correct += (torch.argmax(outputs, -1) == targets).sum().item()
+                            # n_total += len(outputs)
+                            n_correct += (torch.argmax(outputs[:, idx, :], -1) == targets[:, idx]).sum().item()
+                            n_total += len(outputs)
+                        train_acc = n_correct / n_total
+                        # test_acc, f1 = self._evaluate()
+                        test_acc = self._evaluate_textcnn()
+                        if test_acc > max_test_acc:
+                            max_test_acc = test_acc
+                            if not os.path.exists('state_dict'):
+                                os.mkdir('state_dict')
+                            path = './state_dict/{0}_{1}_{2}class_acc{3:.4f}'.format(self.opt.model_name, self.opt.dataset, self.opt.polarities_dim, test_acc)
+                            self.best_model = copy.deepcopy(self.model)
+                            logger.info('>> saved: {}'.format(path))
+                        # if f1 > max_f1:
+                        #     max_f1 = f1
+                        # logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(loss.item(), train_acc, test_acc, f1))
+                        logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}'.format(loss.item(), train_acc, test_acc))
+                
+                elif self.opt.model_name == 'gcae':
+                    loss = criterion(outputs, targets)
+                    loss.backward()
+                    optimizer.step()
+
+                    if global_step % self.opt.log_step == 0:    # 每隔opt.log_step就输出日志
+                        n_correct += (torch.argmax(outputs, -1) == targets).sum().item()
                         n_total += len(outputs)
-                    train_acc = n_correct / n_total
-                    # test_acc, f1 = self._evaluate()
-                    test_acc = self._evaluate()
-                    if test_acc > max_test_acc:
-                        max_test_acc = test_acc
-                        if not os.path.exists('state_dict'):
-                            os.mkdir('state_dict')
-                        path = './state_dict/{0}_{1}_{2}class_acc{3:.4f}'.format(self.opt.model_name, self.opt.dataset, self.opt.polarities_dim, test_acc)
-                        self.best_model = copy.deepcopy(self.model)
-                        # torch.save(self.model.state_dict(), path)
-                        logger.info('>> saved: {}'.format(path))
-                    # if f1 > max_f1:
-                    #     max_f1 = f1
-                    # logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(loss.item(), train_acc, test_acc, f1))
-                    logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}'.format(loss.item(), train_acc, test_acc))
-        return max_test_acc, path
+                        train_acc = n_correct / n_total
+                        test_acc, f1 = self._evaluate_gcae()
+                        if test_acc > max_test_acc:
+                            max_test_acc = test_acc
+                            if not os.path.exists('state_dict'):
+                                os.mkdir('state_dict')
+                            path = './state_dict/{0}_{1}_{2}class_acc{3:.4f}'.format(self.opt.model_name, self.opt.dataset, self.opt.polarities_dim, test_acc)
+                            self.best_model = copy.deepcopy(self.model)
+                            logger.info('>> saved: {}'.format(path))
+                        if f1 > max_f1:
+                            max_f1 = f1
+                        logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(loss.item(), train_acc, test_acc, f1))
+
+        return max_test_acc, max_f1, path
     
-    def _evaluate(self):
+    def _evaluate_textcnn(self):
         # switch model to evaluation mode
         self.model.eval()
         n_test_correct, n_test_total = 0, 0
@@ -128,28 +148,65 @@ class Instructor:
                 t_targets = t_sample_batched['label'].to(self.opt.device)
         
                 t_outputs = self.model(t_inputs)
-                
-                # n_test_correct += (torch.argmax(t_outputs, -1) == t_targets).sum().item()
-                # n_test_total += len(t_outputs)
+
                 for idx, _ in enumerate(Config.label_names):
                     n_test_correct += (torch.argmax(t_outputs[:, idx, :], -1) == t_targets[:, idx]).sum().item()
                     n_test_total += len(t_outputs)
                 
-                # t_targets_all = torch.cat((t_targets_all, t_targets), dim=0) if t_targets_all is not None else t_targets
-                # t_outputs_all = torch.cat((t_outputs_all, t_outputs), dim=0) if t_outputs_all is not None else t_outputs
         test_acc = n_test_correct / n_test_total
-        # f1 = metrics.f1_score(t_targets_all.cpu(), torch.argmax(t_outputs_all, -1).cpu(), labels=[0, 1, 2], average='macro')
-        # return test_acc, f1
         return test_acc
-    
+
+    def _evaluate_gcae(self, show_results=False):
+        # switch model to evaluation mode
+        self.model.eval()
+        n_test_correct, n_test_total = 0, 0
+        t_targets_all, t_outputs_all = None, None
+        with torch.no_grad():
+            for t_batch, t_sample_batched in enumerate(self.test_dataloader):
+                t_inputs = [t_sample_batched[col].to(self.opt.device) for col in self.opt.inputs_cols]
+                t_targets = t_sample_batched['label'].to(self.opt.device)
+                t_outputs = self.model(t_inputs)
+                
+                n_test_correct += (torch.argmax(t_outputs, -1) == t_targets).sum().item()
+                n_test_total += len(t_outputs)
+                
+                t_targets_all = torch.cat((t_targets_all, t_targets), dim=0) if t_targets_all is not None else t_targets
+                t_outputs_all = torch.cat((t_outputs_all, t_outputs), dim=0) if t_outputs_all is not None else t_outputs
+        
+        labels = t_targets_all.data.cpu()
+        predic = torch.argmax(t_outputs_all, -1).cpu()
+        test_acc = n_test_correct / n_test_total
+        f1 = metrics.f1_score(labels, predic, labels=[0, 1, 2, 3], average='macro')
+
+        if show_results:
+            report = metrics.classification_report(labels, predic, digits=4)
+            confusion = metrics.confusion_matrix(labels, predic)
+            return report, confusion
+
+        return test_acc, f1
+
+    def _test(self, model_path):
+        # test
+        # self.model.load_state_dict(torch.load(model_path))
+        self.model = self.best_model
+        self.model.eval()
+        test_report, test_confusion  = self._evaluate_gcae(show_results=True)
+        logger.info("Precision, Recall and F1-Score...")
+        logger.info(test_report)
+        logger.info("Confusion Matrix...")
+        logger.info(test_confusion)
+        # logger.info('f1: {:.4f},'.format(f1))
+
     def run(self):
         criterion = nn.CrossEntropyLoss()
         _params = filter(lambda p: p.requires_grad, self.model.parameters())
         optimizer = self.opt.optimizer(_params, lr=self.opt.learning_rate, weight_decay=self.opt.l2reg)
         self._reset_params()
-        max_test_acc, model_path = self._train(criterion, optimizer)
-        # logger.info('max_test_acc: {0}, max_f1: {1}'.format(max_test_acc, max_f1))
-        logger.info('max_test_acc: {:.4f}'.format(max_test_acc))
+        max_test_acc, max_f1, model_path = self._train(criterion, optimizer)
+        logger.info('max_test_acc: {:.4f}, max_f1: {:.4f}'.format(max_test_acc, max_f1))
+        # logger.info('max_test_acc: {:.4f}'.format(max_test_acc))
         logger.info('#' * 60)
         torch.save(self.best_model.state_dict(), model_path)
         logger.info('>> saved: {}'.format(model_path))
+        if self.opt.model_name == 'gcae':
+            self._test(model_path)
