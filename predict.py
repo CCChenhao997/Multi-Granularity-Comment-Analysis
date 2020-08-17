@@ -14,12 +14,12 @@ class Inferer:
         self.tokenizer = build_tokenizer(
                 fnames=[opt.dataset_file['train'], opt.dataset_file['test']], 
                 max_length=opt.max_length, 
-                data_file='{0}_{1}_tokenizer.dat'.format(opt.model_name, opt.dataset),
+                data_file='./embedding/{0}_{1}_tokenizer.dat'.format(opt.model_name, opt.dataset),
                 )
         embedding_matrix = build_embedding_matrix(
                 vocab=self.tokenizer.vocab, 
                 embed_dim=opt.embed_dim, 
-                data_file='{0}_{1}d_{2}_embedding_matrix.dat'.format(opt.model_name, str(opt.embed_dim), opt.dataset))
+                data_file='./embedding/{0}_{1}d_{2}_embedding_matrix.dat'.format(opt.model_name, str(opt.embed_dim), opt.dataset))
 
         self.model = opt.model_class(embedding_matrix, opt)
         print('loading model {0} ...'.format(opt.model_name))
