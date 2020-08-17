@@ -82,6 +82,7 @@ class Config:
 
     model_state_dict_paths = {
         'textcnn': './state_dict/textcnn_ai_chanllenger_4class_acc0.8298',
+        'gcae': './state_dict/gcae_ai_chanllenger_4class_acc0.8101',
     }
 
 
@@ -118,5 +119,6 @@ opt.dataset_file = Config.dataset_files[opt.dataset]
 opt.inputs_cols = Config.input_colses[opt.model_name]
 opt.initializer = Config.initializers[opt.initializer]
 opt.optimizer = Config.optimizers[opt.optimizer]
+opt.state_dict_path = Config.model_state_dict_paths[opt.model_name]
 os.environ["CUDA_VISIBLE_DEVICES"] = opt.cuda
 opt.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if opt.device is None else torch.device(opt.device)
