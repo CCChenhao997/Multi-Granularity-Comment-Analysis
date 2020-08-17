@@ -3,3 +3,5 @@ __pycache__
 data/*
 test/*
 models/__pycache__
+embedding/*
+state_dict/*
