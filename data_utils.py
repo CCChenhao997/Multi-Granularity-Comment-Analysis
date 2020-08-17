@@ -30,7 +30,7 @@ def parse_data_for_textcnn(data_path):
         for index, line in tqdm(df.iterrows()):
             content = line[1].strip()
             content = re.sub(Config.stopwords, '', content)
-            if len(content) > 500:
+            if len(content) > opt.max_length:
                 continue
             label = []
             for idx, name in enumerate(Config.label_names):
@@ -48,21 +48,26 @@ def parse_data_for_gcae(data_path):
     if opt.predict_text is not None:
         content = opt.predict_text.strip()
         content = re.sub(Config.stopwords, '', content)
-        # label = []
         for idx, name in enumerate(Config.label_names):
-            # label.append(0)
             data = {'content': content, 'aspect': Config.label_chinese_name[idx], 'label': 0}
             all_data.append(data)
 
     else:
         df = pd.read_csv(data_path, encoding='utf-8')
+        count = 0
         for index, line in tqdm(df.iterrows()):
             content = line[1].strip()
             content = re.sub(Config.stopwords, '', content)
-            if len(content) > 500:
+            if len(content) > opt.max_length:
                 continue
             for idx, name in enumerate(Config.label_names):
                 polarity = map_sentimental_type(int(line[idx+2]))
+                # * 采样 not mentioned 样本
+                if opt.sample and polarity == 0:
+                    count += 1
+                    # * 去除掉1/4的 not mention 样本
+                    if count % 4 == 0:
+                        continue
                 label = polarity
                 data = {'content': content, 'aspect': Config.label_chinese_name[idx], 'label': label}
                 all_data.append(data)
