@@ -6,8 +6,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from config import Config
-
+from config import logger, Config, opt
 
 # Meaning	    Positive	Neutral	    Negative	Not mentioned
 # Old labels    1	        0	        -1	        -2
@@ -15,10 +14,11 @@ from config import Config
 def map_sentimental_type(value):
     return value + 2
 
-def parse_data_for_textcnn(data_path, predict_text=None):
+def parse_data_for_textcnn(data_path):
     all_data = []
-    if predict_text is not None:
-        content = predict_text.strip()
+    if opt.predict_text is not None:
+        content = opt.predict_text.strip()
+        content = re.sub(Config.stopwords, '', content)
         label = []
         for idx, name in enumerate(Config.label_names):
             label.append(0)
@@ -29,6 +29,9 @@ def parse_data_for_textcnn(data_path, predict_text=None):
         df = pd.read_csv(data_path, encoding='utf-8')
         for index, line in tqdm(df.iterrows()):
             content = line[1].strip()
+            content = re.sub(Config.stopwords, '', content)
+            if len(content) > 500:
+                continue
             label = []
             for idx, name in enumerate(Config.label_names):
                 polarity = map_sentimental_type(int(line[idx+2]))
@@ -40,10 +43,11 @@ def parse_data_for_textcnn(data_path, predict_text=None):
     return all_data
 
 
-def parse_data_for_gcae(data_path, predict_text=None):
+def parse_data_for_gcae(data_path):
     all_data = []
-    if predict_text is not None:
-        content = predict_text.strip()
+    if opt.predict_text is not None:
+        content = opt.predict_text.strip()
+        content = re.sub(Config.stopwords, '', content)
         # label = []
         for idx, name in enumerate(Config.label_names):
             # label.append(0)
@@ -54,7 +58,9 @@ def parse_data_for_gcae(data_path, predict_text=None):
         df = pd.read_csv(data_path, encoding='utf-8')
         for index, line in tqdm(df.iterrows()):
             content = line[1].strip()
-            # label = []
+            content = re.sub(Config.stopwords, '', content)
+            if len(content) > 500:
+                continue
             for idx, name in enumerate(Config.label_names):
                 polarity = map_sentimental_type(int(line[idx+2]))
                 label = polarity
@@ -64,14 +70,14 @@ def parse_data_for_gcae(data_path, predict_text=None):
     return all_data
 
 
-def build_tokenizer(fnames, max_length, data_file, opt):
+def build_tokenizer(fnames, max_length, data_file):
     if opt.model_name == 'textcnn':
         parse = parse_data_for_textcnn
     elif opt.model_name == 'gcae':
         parse = parse_data_for_gcae
 
     if os.path.exists(data_file):
-        print('loading tokenizer:', data_file)
+        logger.info('loading tokenizer:{}'.format(data_file))
         tokenizer = pickle.load(open(data_file, 'rb'))
     else:
         tokenizer = Tokenizer.from_files(fnames=fnames, max_length=max_length, parse=parse)
@@ -131,10 +137,8 @@ class Tokenizer(object):
     @classmethod
     def from_files(cls, fnames, max_length, parse, lower=False):
         corpus = set()
-        pos_tagged_sent = []
         pos_char_to_int, pos_int_to_char = {}, {}
         for fname in fnames:
-            # print(fname)
             for obj in parse(fname):
                 text_raw = obj['content']
                 if lower:
@@ -181,21 +185,23 @@ class Tokenizer(object):
 
 class SentenceDataset(Dataset):
     ''' PyTorch standard dataset class '''
-    def __init__(self, fname, tokenizer, target_dim, opt):
+    def __init__(self, fname, tokenizer, target_dim):
         data = list()
 
-        if opt.model_name == 'textcnn': 
+        if opt.model_name == 'textcnn':
+            logger.info("模型选择TextCNN")
             parse = parse_data_for_textcnn
-            for obj in parse(fname, opt.predict_text):
+            for obj in parse(fname):
                 content = tokenizer.text_to_sequence(obj['content'])
                 label = np.asarray(obj['label'], dtype='int64')
                 data.append({'content': content, 'label': label})
 
         elif opt.model_name == 'gcae':
+            logger.info("模型选择GCAE")
             parse = parse_data_for_gcae
-            for obj in parse(fname, opt.predict_text):
+            for obj in parse(fname):
                 content = tokenizer.text_to_sequence(obj['content'])
-                aspect = tokenizer.text_to_sequence(obj['aspect'], max_length=6)
+                aspect = tokenizer.text_to_sequence(obj['aspect'], max_length=opt.aspect_maxlen)
                 label = obj['label']
                 data.append({'content': content, 'aspect': aspect, 'label': label})
 
@@ -231,10 +237,10 @@ def _load_wordvec(data_path, vocab=None):
 
 def build_embedding_matrix(vocab, embed_dim, data_file):
     if os.path.exists(data_file):
-        print('loading embedding matrix:', data_file)
+        logger.info('loading embedding matrix:{}'.format(data_file))
         embedding_matrix = pickle.load(open(data_file, 'rb'))
     else:
-        print('loading word vectors...')
+        logger.info('loading word vectors...')
         embedding_matrix = np.zeros((len(vocab), embed_dim))
         fname = Config.embedding_path
         word_vec = _load_wordvec(fname, vocab)

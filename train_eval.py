@@ -27,15 +27,15 @@ class Instructor:
         tokenizer = build_tokenizer(
                 fnames=[opt.dataset_file['train'], opt.dataset_file['test']], 
                 max_length=opt.max_length, 
-                data_file='{0}_tokenizer.dat'.format(opt.dataset),
-                opt=opt)
+                data_file='{0}_{1}_tokenizer.dat'.format(opt.model_name, opt.dataset),
+                )
         embedding_matrix = build_embedding_matrix(
                 vocab=tokenizer.vocab, 
                 embed_dim=opt.embed_dim, 
-                data_file='{0}d_{1}_embedding_matrix.dat'.format(str(opt.embed_dim), opt.dataset))
+                data_file='{0}_{1}d_{2}_embedding_matrix.dat'.format(opt.model_name, str(opt.embed_dim), opt.dataset))
         self.model = opt.model_class(embedding_matrix, opt).to(opt.device)
-        trainset = SentenceDataset(opt.dataset_file['train'], tokenizer, target_dim=self.opt.polarities_dim, opt=opt)
-        testset = SentenceDataset(opt.dataset_file['test'], tokenizer, target_dim=self.opt.polarities_dim, opt=opt)
+        trainset = SentenceDataset(opt.dataset_file['train'], tokenizer, target_dim=self.opt.polarities_dim)
+        testset = SentenceDataset(opt.dataset_file['test'], tokenizer, target_dim=self.opt.polarities_dim)
 
         self.train_dataloader = DataLoader(dataset=trainset, batch_size=opt.batch_size, shuffle=True)   # , drop_last=True
         self.test_dataloader = DataLoader(dataset=testset, batch_size=opt.batch_size, shuffle=False)
@@ -112,7 +112,7 @@ class Instructor:
                         # if f1 > max_f1:
                         #     max_f1 = f1
                         # logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(loss.item(), train_acc, test_acc, f1))
-                        logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}'.format(loss.item(), train_acc, test_acc))
+                        logger.info('global_step:{}, loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}'.format(global_step, loss.item(), train_acc, test_acc))
                 
                 elif self.opt.model_name == 'gcae':
                     loss = criterion(outputs, targets)
@@ -133,7 +133,7 @@ class Instructor:
                             logger.info('>> saved: {}'.format(path))
                         if f1 > max_f1:
                             max_f1 = f1
-                        logger.info('loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(loss.item(), train_acc, test_acc, f1))
+                        logger.info('global_step:{}, loss: {:.4f}, acc: {:.4f}, test_acc: {:.4f}, f1: {:.4f}'.format(global_step, loss.item(), train_acc, test_acc, f1))
 
         return max_test_acc, max_f1, path
     
