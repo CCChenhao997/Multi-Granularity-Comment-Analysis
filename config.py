@@ -110,6 +110,7 @@ parser.add_argument('--num_filters', default=256, type=int)
 parser.add_argument('--seed', default=1000, type=int)
 parser.add_argument('--cuda', default=0, type=str)
 parser.add_argument('--predict_text', default=None, type=str)
+parser.add_argument('--sample', default=False, action='store_true')
 opt = parser.parse_args()
     
 opt.model_class = Config.model_classes[opt.model_name]
