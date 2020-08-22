@@ -1,6 +1,20 @@
 /* pages/aspect.wxss */
+.container{
+    /*弹性模型*/
+    display:flex;
+    /*垂直方向 列方向 排布*/
+    flex-direction:column;
+    /*居中*/
+    align-items:center;
+    /*要从整体解决排布的问题是最好的方案*/
+}
 
-textarea {
+.formstyle{
+    top: 100rpx;
+    position: relative;
+}
+
+.textarea {
     width: 700rpx;
     padding: 25rpx 0;
 }
@@ -25,4 +39,63 @@ textarea {
     margin-bottom: 10rpx;
     padding-left: 30rpx;
     padding-right: 30rpx;
+}
+
+/* select */
+.product-list {
+    width: 100%;
+    box-sizing: border-box;
+}
+    
+    
+.choice-bar {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    font-size: 14px;
+    background-color: #fff;
+    /**z-index: 0;**/
+}
+.chioce-item {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20rpx;
+    width: 100%;
+    height: 80rpx;
+    border-top: 1rpx solid #ddd;
+    border-bottom: 1rpx solid #ddd;
+    border-left: 1rpx solid #ddd;
+    /*border-right: 1rpx solid #ddd;*/
+}
+
+.icon-chioce {
+    height: 30rpx;
+    width: 30rpx;
+}
+.district-list,.sorting-list,.filter-list {
+    margin-top: 2rpx;
+    position: absolute;
+    top: 80rpx;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: -1;
+    font-size: 14px;
+    border-bottom: 1rpx solid #ddd;
+}
+.chioce-list-hide {
+    display: none !important;
+}
+.chioce-list-show {
+    /**top: 80rpx;**/
+    animation: slide 500ms;
+}
+
+.sorting-item {
+    height: 80rpx;
+    line-height: 80rpx;
+    padding: 0 40rpx;
+    border-bottom: 1rpx solid #ddd;
 }

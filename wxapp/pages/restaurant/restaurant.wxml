@@ -1,0 +1,12 @@
+<view class="container">
+    <view class="intro" style="border-bottom:1rpx solid #aaa;padding:10rpx">多粒度餐饮评论分析</view>
+    <view wx:for="{{cardTeams}}" wx:key="key" wx:for-item="cardTeam" class="item">
+        <image class="img" src="{{cardTeam.imgsrc}}" mode="aspectFill"></image>
+        <view class="number-wrapper">
+            <text class="name">{{cardTeam.name}}</text>
+            <view class="details">
+                <navigator url="{{cardTeam.url}}">查看详情</navigator>
+            </view>
+        </view>
+    </view>
+</view>

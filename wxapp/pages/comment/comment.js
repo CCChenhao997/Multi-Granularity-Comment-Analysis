@@ -5,9 +5,53 @@ Page({
   data: {
     tip: '',
     text: '',
-    // visualization: {'url1': '../firstLayerBar/firstLayerBar'},
-    // psw: '密码：'
+    ishow: false,
+    start: "选择餐馆",
+    slist: [
+      { id: 1, name: "海底捞" },
+      { id: 1, name: "新石器烤肉" },
+      { id: 1, name: "探鱼" },
+      { id: 1, name: "南京大排档" },
+      { id: 1, name: "多伦多海鲜自助" },
+    ],
+    isstart: false,
+    openimg: "/source/emotion.png",
+    offimg: "/source/person.png"
   },
+
+  opens: function (e) {
+    switch (e.currentTarget.dataset.item) {
+     case "1":
+      if (this.data.isstart) {
+       this.setData({
+        isstart: false,
+        ishow: false,
+       });
+      }
+      else {
+       this.setData({
+        isstart: true,
+        ishow: false,
+       });
+      }
+      break;
+    }
+   },
+
+   onclicks1: function (e) {
+    var index = e.currentTarget.dataset.index;
+    let name = this.data.slist[index].name;
+    this.setData({
+     isstart: false,
+     isfinish: false,
+     isdates: false,
+     start: this.data.slist[index].name,
+     ishow: true,
+     // finish: "目的地"
+    })
+    console.log(name)
+   },
+
   formBindsubmit: function (e) {
     this.setData({
       // tip: '分析结果',
@@ -15,6 +59,7 @@ Page({
     })
     this.getTableData();
   },
+
   formReset: function () {
     this.setData({
         tip: '',
@@ -51,12 +96,16 @@ Page({
   // }, /*onLoad-end */
   getTableData: function () {//自定义函数名称
     var that = this; 
+    var resName = this.data.start
     // 这个地方非常重要，重置data{}里数据时候setData方法的this应为以及函数的this, 如果在下方的sucess直接写this就变成了wx.request()的this了
     wx.request({
        //请求接口的地址
       url: 'http://10.108.217.31:7777/sa', 
       data: {
-        text: this.data.text
+        customerName: app.globalData.userInfo.nickName,
+        customerGender: app.globalData.userInfo.gender,
+        resName: resName,
+        text: this.data.text,
       },
       method: "POST",
       header: {

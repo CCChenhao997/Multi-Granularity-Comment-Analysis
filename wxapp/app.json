@@ -3,7 +3,8 @@
     "pages/home/home",
     "pages/logs/logs",
     "pages/comment/comment",
-    "pages/visualization/visualization"
+    "pages/visualization/visualization",
+    "pages/restaurant/restaurant"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -19,6 +20,12 @@
     "position": "bottom",
     "borderStyle": "black",
     "list": [
+      {
+        "pagePath": "pages/restaurant/restaurant",
+        "text": "餐馆详情",
+        "iconPath": "source/restaurant.png",
+        "selectedIconPath": "source/restaurant.png"
+      },
       {
         "pagePath": "pages/comment/comment",
         "text": "评论分析",
