@@ -35,5 +35,7 @@ App({
   },
   globalData: {
     userInfo: null,
+    scoreList: null,
+    radarScore: null,
   }
 })

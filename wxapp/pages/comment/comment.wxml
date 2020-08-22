@@ -1,27 +1,17 @@
 <form bindsubmit="formBindsubmit" bindreset="formReset">
-  <!-- <view style="display:flex;">
-    <label>评论：</label>
-    <input name="text" maxlength='2000' placeholder="请输入您的本次评价" />
-  </view> -->
   <view class="page-section">
     <!-- <view class="page-section-title">这是一个可以自动聚焦的textarea</view> -->
     <view class="textarea-wrp">
       <textarea auto-focus="true" style="height: 10em" name="text" maxlength='2000' placeholder="请输入内容" />
     </view>
   </view>
-  <!-- <view style="display:flex;">
-    <label>密码：</label>
-    <input name="psw" placeholder="请输入密码！" password="true" />
-  </view> -->
-  <!-- <view style="display:flex;margin-top:30px;">
-    <button style="width:30%;" type="primary" formType="submit" >登录</button>
-    <button style="width:30%" formType="reset" >重置</button>
-  </view> -->
   <view class="btn-area">
     <button style="margin: 30rpx 0" type="primary" formType="submit">Submit</button>
     <button style="margin: 30rpx 0" formType="reset">Reset</button>
   </view>
 </form>
+
+<button bindtap='bindViewTab'>First layer visualization</button>
 
 <view>{{tip}}</view>
 <view>{{location}}</view>

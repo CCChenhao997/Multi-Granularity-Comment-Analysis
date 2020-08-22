@@ -24,9 +24,9 @@ def sa_predict():
 
             base = 0
             aspect_layer1_dict = {}
-            score_list = []
+            scoreList = []
             for aspect in Config.aspect_names:
-                tags = []
+                # tags = []
                 score = 60
                 positive_score = (100 - score) / len(Config.aspect_names[aspect])
                 neutral_score = positive_score / 2
@@ -45,13 +45,16 @@ def sa_predict():
                     # tags.append(predict_tags[i])
                 aspect_layer1_dict.update({aspect: score})
                 base += len(Config.aspect_names[aspect])
-                score_list.append(score)
+                scoreList.append(score)
+                # score_list.insert(0, score)
 
+            radarScore = [i*100 for i in predict_tags]
             predict_tags_trans = [Config.label_trans(i) for i in predict_tags]
             aspect_layer2_dict = dict(zip(Config.label_names, predict_tags_trans))
             
-            data = {'Aspect_first_layer': aspect_layer1_dict, 'Aspect_second_layer': aspect_layer2_dict, 'score_list': score_list}
-            print(data)
+            data = {'Aspect_first_layer': aspect_layer1_dict, 'Aspect_second_layer': aspect_layer2_dict, \
+                    'scoreList': scoreList, 'radarScore': radarScore}
+            # print(data)
             # return jsonify({'predict_tags': aspect_label})
             return Response(json.dumps(data, sort_keys=False, indent=4, ensure_ascii=False), mimetype='application/json')
         else:

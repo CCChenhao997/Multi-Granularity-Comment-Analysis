@@ -2,7 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/logs/logs",
-    "pages/aspect/aspect"
+    "pages/comment/comment",
+    "pages/visualization/visualization"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -10,7 +11,6 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
-
   "sitemapLocation": "sitemap.json",
   "tabBar": {
     "color": "",
@@ -20,8 +20,8 @@
     "borderStyle": "black",
     "list": [
       {
-        "pagePath": "pages/aspect/aspect",
-        "text": "情感分析",
+        "pagePath": "pages/comment/comment",
+        "text": "评论分析",
         "iconPath": "source/emotion.png",
         "selectedIconPath": "source/emotion.png"
       },

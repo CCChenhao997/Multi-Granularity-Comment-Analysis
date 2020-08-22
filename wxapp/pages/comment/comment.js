@@ -5,6 +5,7 @@ Page({
   data: {
     tip: '',
     text: '',
+    // visualization: {'url1': '../firstLayerBar/firstLayerBar'},
     // psw: '密码：'
   },
   formBindsubmit: function (e) {
@@ -97,10 +98,24 @@ Page({
           others_overall_experience: '本次消费感受: ' + res.data.Aspect_second_layer.others_overall_experience,
           others_willing_to_consume_again: '再次消费的意愿: ' + res.data.Aspect_second_layer.others_willing_to_consume_again
         })
+
+        app.globalData.scoreList = res.data.scoreList
+        app.globalData.aspectScore = res.data.radarScore
+        // console.log(app.score_list)
+        // console.log(app.aspectScore)
       },
       fail: function (err) { },//请求失败
       complete: function () { }//请求完成后执行的函数
     })
     
+  },
+
+  bindViewTab:function(){
+
+    wx.navigateTo({    //保留当前页面，跳转到应用内的某个页面（最多打开5个页面，之后按钮就没有响应的）
+
+         url:"/pages/visualization/visualization"
+
+    })
   }
 })
