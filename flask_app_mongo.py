@@ -5,7 +5,7 @@ import numpy as np
 from loguru import logger
 from predict import infer
 from config import Config
-# from db import fine_grained_db
+from db import fine_grained_db
 from flask import Flask, request, jsonify, Response
 
 app = Flask(__name__)
@@ -20,7 +20,6 @@ def sa_predict():
                 input_data = str(input_data, encoding='utf-8')
             logger.info('input_data:{}'.format(input_data))
             input_json = json.loads(input_data)
-            # QAanswer, graph_info = engine.answer(input_json['text'])
             predict_tags, _, predict_prob = infer.evaluate(input_json['text'])
             # predict_tags = predict_tags[0]
 
@@ -32,15 +31,15 @@ def sa_predict():
                 score = 80
                 positive_score = (100 - score) / len(Config.aspect_names[aspect])
                 neutral_score = positive_score / 2
-                negative_score = -10
+                negative_score = -(100 - score) / len(Config.aspect_names[aspect])
                 for i in range(base, len(Config.aspect_names[aspect]) + base):
 
                     if predict_tags[i] == 3:
-                        score += positive_score
+                        score += positive_score * predict_prob[i]
                     elif predict_tags[i] == 2:
-                        score += neutral_score
+                        score += neutral_score * predict_prob[i]
                     elif predict_tags[i] == 1:
-                        score += negative_score
+                        score += negative_score * predict_prob[i]
                     else:
                         pass
 
@@ -57,14 +56,15 @@ def sa_predict():
             
             data = {'Aspect_first_layer': aspect_layer1_dict, 'Aspect_second_layer': aspect_layer2_dict, \
                     'scoreList': scoreList, 'radarScore': radarScore}
-            # print(data)
+            print(data)
             # return jsonify({'predict_tags': aspect_label})
-            # if Config.mongo_save:
-            #     num = fine_grained_db.count()
-            #     comment_score = np.mean(scoreList)
-            #     item = {"userID":num+1,	"userComment":input_json['text'], "finegrainedLabel":predict_tags, \
-            #             "coarsegrainedScore":scoreList, "commentScore":comment_score}
-            #     fine_grained_db.add_item(item)
+            if Config.mongo_save:
+                num = fine_grained_db.count()
+                comment_score = np.mean(scoreList)
+                item = {"_id":num+1, "userID":num+1, "userName":input_json['customerName'], "userGender":input_json['customerGender'],  \
+                        "userComment":input_json['text'], "finegrainedLabel":predict_tags, \
+                        "coarsegrainedScore":scoreList, "commentScore":comment_score}
+                fine_grained_db.add_item(item)
                 
             return Response(json.dumps(data, sort_keys=False, indent=4, ensure_ascii=False), mimetype='application/json')
         else:
