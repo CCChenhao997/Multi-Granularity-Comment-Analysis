@@ -1,4 +1,7 @@
 import pymongo
+import numpy as np
+from collections import Counter
+
 from config import Config, opt
 
 
@@ -31,14 +34,40 @@ class FineGrainedDb(object):
 
     def clear_files(self): 
         '''
-        清空report集合所有数据
+        清空该集合所有数据
         '''
-        self.coll_set.remove()
+        self.collection.delete_many({})
+
+    def market_score(self):
+        
+        market_list = self.collection.distinct("marketName")
+        market_aspect_count = {}
+        market_final_score = {}
+        for market in market_list:
+            aspect_logit_count = {}
+            label_list = []
+            items = []
+            commentScore_list = []
+            items.extend(list(self.collection.find({"marketName":market})))
+            for item in items:
+                label_list.append(item['finegrainedLabel'])
+                commentScore_list.append(item['commentScore'])
+            fine_grained_label = list(zip(*label_list))
+            print(fine_grained_label)
+            final_score = np.mean(commentScore_list)
+            for index, aspect_label in enumerate(fine_grained_label):
+                aspect_logit_count[Config.label_names[index]] = dict(Counter(aspect_label))
+            
+            market_aspect_count[market] = aspect_logit_count
+            market_final_score[market] = final_score
+
+        return market_aspect_count, market_final_score
 
 fine_grained_db = FineGrainedDb()
 
 if __name__ == "__main__":
-    item = {"_id":0, "userComment":"好吃"}
-    item = {"userID":1,	"userComment":"好吃", "finegrainedLabel":[1,0,0,1], \
-                        "coarsegrainedScore":[4,1,2,4], "commentScore":[1,5,2,5]}
-    fine_grained_db.add_item(item)
+    # item = {"_id":0, "userComment":"好吃"}
+    # item = {"userID":1,	"userComment":"好吃", "finegrainedLabel":[1,0,0,1], \
+    #                     "coarsegrainedScore":[4,1,2,4], "commentScore":[1,5,2,5]}
+    # fine_grained_db.add_item(item)
+    fine_grained_db.market_score()

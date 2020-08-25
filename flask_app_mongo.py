@@ -62,8 +62,8 @@ def sa_predict():
                 num = fine_grained_db.count()
                 comment_score = np.mean(scoreList)
                 item = {"_id":num+1, "userID":num+1, "userName":input_json['customerName'], "userGender":input_json['customerGender'],  \
-                        "userComment":input_json['text'], "finegrainedLabel":predict_tags, \
-                        "coarsegrainedScore":scoreList, "commentScore":comment_score}
+                        "userComment":input_json['text'], "marketName":input_json['resName'], \
+                        "finegrainedLabel":predict_tags, "coarsegrainedScore":scoreList, "commentScore":comment_score}
                 fine_grained_db.add_item(item)
                 
             return Response(json.dumps(data, sort_keys=False, indent=4, ensure_ascii=False), mimetype='application/json')
