@@ -1,5 +1,42 @@
-# Multi-Granularity-Comment-Analysis
+Multi-Granularity-Comment-Analysis
+
 北邮研究生创新创业项目——面向餐饮行业的多粒度评论分析系统
+
+### 主要模块
+
+- 前端：微信小程序
+- 后台：Flask框架
+- 数据库：MongoDB
+- 算法模型：GCAE
+- 深度学习框架：Pytorch
+
+
+
+-----------------
+
+### 展示界面
+
+<table>
+    <tr>
+        <td ><center><img src="./images/image-comment.png" style="zoom:35%;" />
+        </center></td>
+        <td ><center><img src="./images/image-radar.png" style="zoom:35%;" />
+        </center></td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td ><center><img src="./images/image-restaurant.png" style="zoom:35%;" />
+        </center></td>
+        <td ><center><img src="./images/image-bar.png" style="zoom:35%;" />
+        </center></td>
+    </tr>
+</table>
+
+
+
+--------------------
 
 ### TODO：
 
@@ -17,37 +54,8 @@
 
 
 
------------------------
+--------------------
 
-### 展示界面
+### Licence
 
-<table>
-    <tr>
-        <td ><center><img src="./images/image-comment.png" style="zoom:40%;" />
-        </center></td>
-        <td ><center><img src="./images/image-radar.png" style="zoom:40%;" />
-        </center></td>
-    </tr>
-</table>
-
-<table>
-    <tr>
-        <td ><center><img src="./images/image-restaurant.png" style="zoom:40%;" />
-        </center></td>
-        <td ><center><img src="./images/image-bar.png" style="zoom:40%;" />
-        </center></td>
-    </tr>
-</table>
-
-
-
----------------
-
-### 主要模块
-
-- 前端：微信小程序
-- 后台：Flask框架
-- 数据库：MongoDB
-- 算法模型：GCAE
-- 深度学习框架：Pytorch
-
+MIT
