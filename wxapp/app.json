@@ -4,7 +4,12 @@
     "pages/logs/logs",
     "pages/comment/comment",
     "pages/visualization/visualization",
-    "pages/restaurant/restaurant"
+    "pages/restaurant/restaurant",
+    "pages/visualHDL/visualHDL",
+    "pages/visualXSQ/visualXSQ",
+    "pages/visualTY/visualTY",
+    "pages/visualNJ/visualNJ",
+    "pages/visualDLD/visualDLD"
   ],
   "window": {
     "backgroundTextStyle": "light",
