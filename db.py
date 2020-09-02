@@ -53,14 +53,20 @@ class FineGrainedDb(object):
                 label_list.append(item['finegrainedLabel'])
                 commentScore_list.append(item['commentScore'])
             fine_grained_label = list(zip(*label_list))
-            print(fine_grained_label)
+            # print(fine_grained_label)
             final_score = np.mean(commentScore_list)
             for index, aspect_label in enumerate(fine_grained_label):
-                aspect_logit_count[Config.label_names[index]] = dict(Counter(aspect_label))
+                label_count = dict(Counter(aspect_label))
+                label_count.setdefault(0, 0)
+                label_count.setdefault(1, 0)
+                label_count.setdefault(2, 0)
+                label_count.setdefault(3, 0)
+                label_count = sorted(label_count.items(), key = lambda x:x[0], reverse = False)
+                aspect_logit_count[Config.label_names[index]] = dict(label_count)
             
             market_aspect_count[market] = aspect_logit_count
             market_final_score[market] = final_score
-
+        # print(market_aspect_count)
         return market_aspect_count, market_final_score
 
 fine_grained_db = FineGrainedDb()
