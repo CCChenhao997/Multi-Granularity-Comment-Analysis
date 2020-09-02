@@ -15,7 +15,7 @@
   <view class="page-section">
     <!-- <view class="page-section-title">这是一个可以自动聚焦的textarea</view> -->
     <view class="textarea-wrp">
-      <textarea wx:if="{{ishow}}" auto-focus="true" style="height: 10em" name="text" maxlength='2000' placeholder="请输入内容" />
+      <textarea wx:if="{{ishow}}" auto-focus="true" style="height: 10em; width:100%; padding:0 10rpx;" name="text" maxlength='2000' placeholder="请输入内容" />
     </view>
   </view>
   <view class="btn-area">
