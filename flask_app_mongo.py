@@ -74,6 +74,25 @@ def sa_predict():
     except Exception as e:
         logger.debug("{}:{}".format(type(e), e))
 
+@app.route("/favorableRate", methods=['GET'])
+def resfavorableRate():
+    try:
+        if request.method == 'GET':
+            logger.info("接受到一个SA GET请求, IP:{}.".format(request.remote_addr))
+            market_aspect_count, market_final_score = fine_grained_db.market_score()
+            # market_aspect_count = json.dumps(market_aspect_count, sort_keys=False, indent=4, ensure_ascii=False)
+            # market_final_score = json.dumps(market_final_score, sort_keys=False, indent=4, ensure_ascii=False)
+            results = {'market_final_score': market_final_score, 'market_aspect_count': market_aspect_count}
+            results = json.dumps(results, sort_keys=False, indent=4, ensure_ascii=False)
+            # print(market_aspect_count, market_final_score)
+            # return Response(market_aspect_count, mimetype='application/json'), Response(market_final_score, mimetype='application/json') 
+            return Response(results, mimetype='application/json')
+        else:
+            logger.info("客户端提交了一个post请求，应该为get请求")
+            return "YOU NEED USE GET ", 500
+
+    except Exception as e:
+        logger.debug("{}:{}".format(type(e), e))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=7777)
