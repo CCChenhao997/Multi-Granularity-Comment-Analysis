@@ -20,7 +20,7 @@
   </view>
   <view class="btn-area">
     <button wx:if="{{ishow}}" style="margin: 30rpx 0" type="primary" formType="submit">Submit</button>
-    <button wx:if="{{ishow}}" style="margin: 30rpx 0" formType="reset">Reset</button>
+    <button wx:if="{{ishow}}" style="margin: 30rpx 0" type="warn" formType="reset">Reset</button>
     <button wx:if="{{ishow}}" bindtap='bindViewTab'>Visualization</button>
   </view>
 </form>
@@ -66,12 +66,3 @@
   <view>{{others_willing_to_consume_again}}</view>
 
 </view>
-
-<!-- <block wx:for="{{datas}}"> 
-    <view>
-        {{item.Aspect_first_layer}}  
-    </view>
-    <view>
-        {{item.Aspect_second_layer}}
-    </view>
- </block> -->

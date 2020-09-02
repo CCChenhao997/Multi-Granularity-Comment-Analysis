@@ -1,7 +1,7 @@
 # Multi-Granularity-Comment-Analysis
 北邮研究生创新创业项目——面向餐饮行业的多粒度评论分析系统
 
-待优化：
+### TODO：
 
 - [x] 数据清洗，去掉无关符号。 2020/8/17完成
 - [x] 数据输入格式转换：sentence aspect label  2020/8/16完成
@@ -13,6 +13,41 @@
 - [x] 增加商家数据库 2020/8/27完成
 - [x] 情感得分计算算法 2020/8/27完成
 - [ ] 完善个人中心
+- [ ] 评论分析中 textarea 输入框左右边界不对齐
 
- 
+
+
+-----------------------
+
+### 展示界面
+
+<table>
+    <tr>
+        <td ><center><img src="./images/image-comment.png" style="zoom:40%;" />
+        </center></td>
+        <td ><center><img src="./images/image-radar.png" style="zoom:40%;" />
+        </center></td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td ><center><img src="./images/image-restaurant.png" style="zoom:40%;" />
+        </center></td>
+        <td ><center><img src="./images/image-bar.png" style="zoom:40%;" />
+        </center></td>
+    </tr>
+</table>
+
+
+
+---------------
+
+### 主要模块
+
+- 前端：微信小程序
+- 后台：Flask框架
+- 数据库：MongoDB
+- 算法模型：GCAE
+- 深度学习框架：Pytorch
 
