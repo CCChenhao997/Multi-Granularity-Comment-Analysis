@@ -115,3 +115,23 @@
     margin: 20px;
     text-align: center;
 }
+
+.star{
+    /* position: absolute; */
+    /* top:230rpx; */
+    /* left:120rpx; */
+    right: 0;
+    /* margin-right: 10rpx; */
+}
+
+.star-image {
+    /* position: absolute; */
+    /* top: 80rpx; */
+    width: 50rpx;
+    height: 50rpx;
+    /* align-content: flex-end; */
+    /* float: right; */
+    /* right: 0;  */
+    /* margin-right: 10rpx; */
+    /* src: "../../images/normal.png"; */
+}

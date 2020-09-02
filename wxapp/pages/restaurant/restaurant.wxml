@@ -4,6 +4,12 @@
         <image class="img" src="{{cardTeam.imgsrc}}" mode="aspectFill"></image>
         <view class="number-wrapper">
             <text class="name">{{cardTeam.name}}</text>
+
+            <view class="star">
+                <block wx:for="{{stars}}" wx:key="stars" wx:for-item="item">
+                    <image class="star-image" style="left: {{item*80}}rpx" src="{{cardTeam.score > item ?(cardTeam.score-item == 0.5?halfSrc:selectedSrc) : normalSrc}}"></image>
+                </block>
+            </view>
             <view class="details">
                 <navigator url="{{cardTeam.url}}">查看详情</navigator>
             </view>

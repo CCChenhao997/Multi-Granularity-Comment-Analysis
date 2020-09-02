@@ -148,13 +148,13 @@ Page({
           others_willing_to_consume_again: '再次消费的意愿: ' + res.data.Aspect_second_layer.others_willing_to_consume_again
         })
 
-        app.globalData.scoreList = res.data.scoreList
+        app.globalData.scoreList   = res.data.scoreList
         app.globalData.aspectScore = res.data.radarScore
         // console.log(app.score_list)
         // console.log(app.aspectScore)
       },
-      fail: function (err) { },//请求失败
-      complete: function () { }//请求完成后执行的函数
+      fail: function (err) { }, //请求失败
+      complete: function () { } //请求完成后执行的函数
     })
     
   },
