@@ -45,7 +45,8 @@ class Config:
                     'dish': ['dish_portion', 'dish_taste', 'dish_look', 'dish_recommendation'], 
                     'others': ['others_overall_experience', 'others_willing_to_consume_again']
                     }
-
+                    
+    aspects = ['location', 'service', 'price', 'environment', 'dish', 'others']
     
     model_classes = {
         'textcnn': TextCNN,
@@ -85,6 +86,15 @@ class Config:
         'gcae': './state_dict/gcae_ai_chanllenger_4class_acc0.8101',
     }
 
+    mongo_save = True
+
+    MONGO_HOST = '127.0.0.1'
+    
+    MONGO_PORT = 27000
+
+    MONGO_COLLECTION = 'fine_grained'
+
+    DB_NAME = 'GCAE'
 
 # Hyperparameters
 parser = argparse.ArgumentParser()

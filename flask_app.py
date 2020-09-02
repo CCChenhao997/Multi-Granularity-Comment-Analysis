@@ -1,9 +1,11 @@
 # import os
 # import re
 import json
+import numpy as np
 from loguru import logger
 from predict import infer
 from config import Config
+# from db import fine_grained_db
 from flask import Flask, request, jsonify, Response
 
 app = Flask(__name__)
@@ -19,7 +21,7 @@ def sa_predict():
             logger.info('input_data:{}'.format(input_data))
             input_json = json.loads(input_data)
             # QAanswer, graph_info = engine.answer(input_json['text'])
-            predict_tags, _ = infer.evaluate(input_json['text'])
+            predict_tags, _, predict_prob = infer.evaluate(input_json['text'])
             # predict_tags = predict_tags[0]
 
             base = 0
@@ -27,7 +29,7 @@ def sa_predict():
             scoreList = []
             for aspect in Config.aspect_names:
                 # tags = []
-                score = 60
+                score = 80
                 positive_score = (100 - score) / len(Config.aspect_names[aspect])
                 neutral_score = positive_score / 2
                 negative_score = -10
@@ -43,6 +45,7 @@ def sa_predict():
                         pass
 
                     # tags.append(predict_tags[i])
+                score = round(score, 2)
                 aspect_layer1_dict.update({aspect: score})
                 base += len(Config.aspect_names[aspect])
                 scoreList.append(score)
@@ -56,6 +59,13 @@ def sa_predict():
                     'scoreList': scoreList, 'radarScore': radarScore}
             # print(data)
             # return jsonify({'predict_tags': aspect_label})
+            # if Config.mongo_save:
+            #     num = fine_grained_db.count()
+            #     comment_score = np.mean(scoreList)
+            #     item = {"userID":num+1,	"userComment":input_json['text'], "finegrainedLabel":predict_tags, \
+            #             "coarsegrainedScore":scoreList, "commentScore":comment_score}
+            #     fine_grained_db.add_item(item)
+                
             return Response(json.dumps(data, sort_keys=False, indent=4, ensure_ascii=False), mimetype='application/json')
         else:
             logger.info("客户端提交了一个get请求，应该为post请求")
