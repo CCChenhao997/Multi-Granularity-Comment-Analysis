@@ -52,6 +52,11 @@ class FineGrainedDb(object):
             label_list = []
             commentScore_list = []
             coarseScore_list = []
+
+            negative_list = []
+            neutral_list = []
+            positive_list = []
+
             items.extend(list(self.collection.find({"marketName":market})))
             for item in items:
                 label_list.append(item['finegrainedLabel'])
@@ -74,10 +79,22 @@ class FineGrainedDb(object):
                 label_count.setdefault(2, 0)
                 label_count.setdefault(3, 0)
                 label_count = sorted(label_count.items(), key = lambda x:x[0], reverse = False)
+                negative_list.append(-label_count[1][1])
+                neutral_list.append(label_count[2][1])
+                positive_list.append(label_count[3][1])
+                
                 aspect_logit_count[Config.label_names[index]] = dict(label_count)
-            
+            # print(negative_list)
+            negative_list.reverse()
+            neutral_list.reverse()
+            positive_list.reverse()
+
+            # print(negative_list)
             market_coarse_score[market] = corase_mean_score
             market_aspect_count[market] = aspect_logit_count
+            market_aspect_count[market]['negative'] = negative_list
+            market_aspect_count[market]['neutral'] = neutral_list
+            market_aspect_count[market]['positive'] = positive_list
             final_score = round(final_score/20)
             market_final_score[market] = final_score
         # print(market_aspect_count)
