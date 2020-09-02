@@ -45,7 +45,8 @@ class Config:
                     'dish': ['dish_portion', 'dish_taste', 'dish_look', 'dish_recommendation'], 
                     'others': ['others_overall_experience', 'others_willing_to_consume_again']
                     }
-
+                    
+    aspects = ['location', 'service', 'price', 'environment', 'dish', 'others']
     
     model_classes = {
         'textcnn': TextCNN,
