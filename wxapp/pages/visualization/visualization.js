@@ -64,11 +64,13 @@ function initRadar(canvas, width, height, dpr) {
     yAxis: {
       show: false
     },
-    // legend: {
-    //   data: ["Aspect Radar Score"]
-    // },
+    legend: {
+      data: ["Aspect Radar Score"]
+    },
     radar: {
-      // shape: 'circle',
+      nameGap: 1,      // 指示器名称和指示器轴的距离。[ default: 15 ]
+      splitNumber: 3,   // (这里是圆的环数)指示器轴的分割段数。[ default: 5 ]
+      shape: 'polygon', //雷达图绘制类型，支持 'polygon'(多边形) 和 'circle'(圆)。[ default: 'polygon' ]
       indicator: [{
         name: '交通便利',
         max: 300
@@ -162,8 +164,7 @@ function initRadar(canvas, width, height, dpr) {
       data: [{
         value: app.globalData.aspectScore,
         name: 'Aspect Radar Score'
-      }
-      ]
+      }]
     }]
   };
 
