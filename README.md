@@ -1,11 +1,9 @@
-Multi-Granularity-Comment-Analysis
+北邮研究生创新创业项目——面向餐饮行业的多粒度评论分析系统
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-北邮研究生创新创业项目——面向餐饮行业的多粒度评论分析系统
-
-### 主要模块
+## 主要模块
 
 - 前端：微信小程序
 - 后台：Flask框架
@@ -15,9 +13,9 @@ Multi-Granularity-Comment-Analysis
 
 
 
------------------
+----------------
 
-### 展示界面
+## 展示界面
 
 <table>
     <tr>
@@ -38,10 +36,9 @@ Multi-Granularity-Comment-Analysis
 </table>
 
 
+-----
 
---------------------
-
-### TODO：
+## TODO：
 
 - [x] 数据清洗，去掉无关符号。 2020/8/17完成
 - [x] 数据输入格式转换：sentence aspect label  2020/8/16完成
@@ -57,11 +54,16 @@ Multi-Granularity-Comment-Analysis
 
 
 
---------------------
+----------------
 
-### Licence
+## Licence
 
-MIT
+[MIT](LICENSE)
+
+
+
+---------------
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
