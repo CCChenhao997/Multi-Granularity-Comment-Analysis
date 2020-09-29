@@ -1,6 +1,6 @@
 Multi-Granularity-Comment-Analysis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 北邮研究生创新创业项目——面向餐饮行业的多粒度评论分析系统
@@ -72,6 +72,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/airflier"><img src="https://avatars0.githubusercontent.com/u/51824426?v=4" width="100px;" alt=""/><br /><sub><b>airflier</b></sub></a><br /><a href="https://github.com/CCChenhao997/Multi-Granularity-Comment-Analysis/commits?author=airflier" title="Code">💻</a></td>
+    <td align="center"><a href="http://chenhao.space/"><img src="https://avatars2.githubusercontent.com/u/22636738?v=4" width="100px;" alt=""/><br /><sub><b>Chenhao</b></sub></a><br /><a href="#ideas-CCChenhao997" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
